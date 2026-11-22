@@ -1,0 +1,2 @@
+# Preserve the vendored snapshot byte-for-byte for provenance SHA-256 checks.
+vendor/** -text -whitespace

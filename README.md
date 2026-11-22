@@ -1,45 +1,68 @@
-# CATIA MCP
+# WHUCAD-MCP：序列还原服务
 
-用于 WHUCAD 工具调用评测的 CATIA V5 MCP 服务。当前版本提供 MCP 握手、传输和 Windows COM 连接。客户端调用 `tools/list` 会收到 `{"tools":[]}`。
+本仓库首先服务于 **WHUCAD-MCP version 程序序列的还原**：按照转换后的指令、参数和选择关系，在 CATIA V5 中重建零件。毕设中的自然语言理解、工具规划和评测功能在这个基线上另行扩展。
 
-## 安装
+当前发行：**v0.2.0**。推荐协议：**whucad-migration（20 个工具）**。程序 JSON 版本：**3**。目录名 mcp-data-v2、Git 发行版本和 JSON 格式版本是不同的编号。
 
-在仓库根目录用 Python 3.11 或更高版本执行以下 PowerShell 命令。实际访问 CATIA 需要在装有 CATIA V5、且已注册 `CATIA.Application` 的 Windows 用户会话中运行。
+## 安装与启动
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -e .
-```
-
-## 启动服务
-
-本地 MCP 客户端可以通过 stdio 启动服务。将客户端配置中的 `command` 替换为本仓库虚拟环境里 Python 的绝对路径。
-
-```json
-{
-  "mcpServers": {
-    "catia": {
-      "command": "C:\\work\\catia-mcp\\.venv\\Scripts\\python.exe",
-      "args": ["-m", "catia_mcp"]
-    }
-  }
-}
-```
-
-使用 Streamable HTTP 时，在 PowerShell 中启动服务，然后让客户端连接 `http://127.0.0.1:8000/mcp`。可通过 `--port` 指定端口。
+需要 Windows、64 位 Python 3.11–3.13、可用的 CATIA V5 与许可。依赖已锁定；安装会创建本目录自己的 `.venv`。
 
 ```powershell
-.\.venv\Scripts\python.exe -m catia_mcp streamable-http
+.\setup.ps1
+# Python 不在 PATH 时：
+.\setup.ps1 -Python 'C:\Path\To\python.exe'
+.\start-mcp.ps1
+# HTTP 模式：
+.\start-mcp.ps1 streamable-http --port 8000
 ```
 
-## 验证 CATIA 连接
+标准输入输出模式供 MCP 客户端连接；HTTP 地址为 http://127.0.0.1:8000/mcp。服务启动和工具枚举不需要创建 CATIA 文档。
 
-MCP 握手及枚举工具均可在 CATIA 关闭时完成。实际访问 COM 时，连接器优先连接当前用户已运行的 CATIA 实例。若没有活动实例，则请求 Windows 通过 COM 激活 CATIA。下面的只读检查会输出 CATIA 的应用名称。
+公共入口固定新版协议。直接执行 `python -m catia_mcp` 仍然维持历史 legacy 默认值；开发时要使用新版，应显式添加 `--protocol whucad-migration`。
+
+## 校验和还原一个程序
 
 ```powershell
-.\.venv\Scripts\python.exe -c "import asyncio; from catia_mcp.connection import run_in_catia; print(asyncio.run(run_in_catia(lambda app: app.Name)))"
+.\run.ps1 validate .\examples\00000000.json
+.\run.ps1 execute .\examples\00000000.json --output .\runs\first-case
+# 还原完整 v2 数据集中的某个程序：
+.\run.ps1 execute 'D:\Path\To\mcp-data-v2\programs\0000\00000000.json' --output .\runs\another-case
 ```
 
-`src/catia_mcp/server.py` 创建 FastMCP 服务，并将 `run_in_catia` 放入请求的 `lifespan_context`。`src/catia_mcp/connection.py` 串行执行同一服务进程内的 CAD 操作。一个操作中的 COM 访问在同一工作线程完成，回调返回字符串、数值等普通数据。
+`validate` 仅检查参数结构，不代表建模通过。`execute` 通过真实 stdio MCP 服务在默认 CATIA 环境创建新文档，生成 CATPart、STEP 和调用记录，并检查保存后重新打开。输出目录必须不存在。执行器只关闭它创建的文档；`--keep-open` 可保留结果。
 
-服务与连接分层参考了 [tongriyaotxt/catia-mcp](https://github.com/tongriyaotxt/catia-mcp)。协议实现使用 [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)。
+手动使用 MCP 工具时，先在 CATIA 准备空白 CATPart，再用 `model_state` 绑定；JSON 执行器自动完成这一步。程序内不写会话 model_id，由执行器注入。
+
+## 新版协议的关键约定
+
+- `sol` 开始轮廓；绘图工具把曲线加入当前草图。
+- `selection` 接收 WHUCAD 对象来源树，服务保留当前选择。
+- `topo`、`mirror_topo` 开始选择声明，**不返回旧版的面/边几何候选清单**。
+- 加工工具使用当前草图或当前选择，不接收旧版 sketch_id、edge_id 或 $ref/$match。
+- 长度使用 mm；arc 的 start_angle/end_angle/mid_angle 使用弧度；revolve/groove 的角度遵循原 WHUCAD 解码约定。详见 tools.json，不能通用套用“所有角度都是度”。
+- 参数来自 WHUCAD 归一化后的模型，不能凭这些数值恢复量化之前的原始绝对尺寸。
+
+## 代码组织与后续开发
+
+| 路径 | 用途 |
+|---|---|
+| src/catia_mcp/stateful_migration.py | 新版 20 工具及状态管理 |
+| src/catia_mcp/converter_semantics.py | WHUCAD 建模语义兼容 |
+| vendor/whucad_converter | 原 converter 运行源码与来源哈希 |
+| scripts/execute_mcp_json.py | 单个程序的校验和真实 MCP 执行 |
+| whucad_conversion/migration.py | H5 向量到新版指令的编译库 |
+| tools.json | 新版工具参数定义快照 |
+| examples/00000000.json | 单个还原示例 |
+| tests | 接口、迁移和执行器回归测试 |
+| docs/releases | release 范围、备注及验证记录 |
+
+旧版工具与早期状态式原型保留用于兼容和回归。题库、模型 API 调用、实验成绩、全量数据集、环境文件和输出模型不属于这个发行。
+
+后续毕设工作目录为 `毕设/MCP`，从发行标签创建 `thesis-development` 分支。WHUCAD 还原基线由标签冻结；新增功能在该分支继续开发，不移动基线标签。
+
+[发行备注](docs/releases/v0.2.0.md) · [验证记录](docs/releases/v0.2.0-validation.md)
+
+## 来源
+
+服务与连接基础设施最初参考 tongriyaotxt/catia-mcp；原 WHUCAD 源码按 vendor 中的 provenance.json 保留出处与哈希。本发行不包含 CATIA 软件、许可证或全量 WHUCAD 数据集。

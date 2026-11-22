@@ -1,0 +1,1277 @@
+[
+  {
+    "name": "model_state",
+    "description": "Bind active blank CATPart, or inspect a previously bound model.",
+    "inputSchema": {
+      "properties": {
+        "model_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Id"
+        }
+      },
+      "title": "model_stateArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "sol",
+    "description": "Start the next ordered sketch loop. Curves use local millimetres.",
+    "inputSchema": {
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "model_id"
+      ],
+      "title": "solArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "line",
+    "description": "Append a line to the current loop; no sketch ID is needed.",
+    "inputSchema": {
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "start": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Start",
+          "type": "array"
+        },
+        "end": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "End",
+          "type": "array"
+        }
+      },
+      "required": [
+        "model_id",
+        "start",
+        "end"
+      ],
+      "title": "lineArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "arc",
+    "description": "Append decoded WHUCAD arc geometry. Angles are radians; midpoint identifies the intended arc.",
+    "inputSchema": {
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "center": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Center",
+          "type": "array"
+        },
+        "radius": {
+          "exclusiveMinimum": 0,
+          "title": "Radius",
+          "type": "number"
+        },
+        "start_angle": {
+          "title": "Start Angle",
+          "type": "number"
+        },
+        "end_angle": {
+          "title": "End Angle",
+          "type": "number"
+        },
+        "mid_angle": {
+          "title": "Mid Angle",
+          "type": "number"
+        }
+      },
+      "required": [
+        "model_id",
+        "center",
+        "radius",
+        "start_angle",
+        "end_angle",
+        "mid_angle"
+      ],
+      "title": "arcArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "circle",
+    "description": "Append a circle in local sketch millimetres; frame belongs to the later solid operation.",
+    "inputSchema": {
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "center": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Center",
+          "type": "array"
+        },
+        "radius": {
+          "exclusiveMinimum": 0,
+          "title": "Radius",
+          "type": "number"
+        }
+      },
+      "required": [
+        "model_id",
+        "center",
+        "radius"
+      ],
+      "title": "circleArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "spline",
+    "description": "Begin a spline; follow with ordered scp calls.",
+    "inputSchema": {
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "start": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Start",
+          "type": "array"
+        }
+      },
+      "required": [
+        "model_id",
+        "start"
+      ],
+      "title": "splineArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "scp",
+    "description": "Append one control point to the current spline.",
+    "inputSchema": {
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "point": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Point",
+          "type": "array"
+        }
+      },
+      "required": [
+        "model_id",
+        "point"
+      ],
+      "title": "scpArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "topo",
+    "description": "Begin a selection declaration (WHUCAD marker). Clear pending targets; does not query geometry.",
+    "inputSchema": {
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "model_id"
+      ],
+      "title": "topoArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "mirror_topo",
+    "description": "Begin a mirror selection declaration; mirror provenance is explicit in the following selection tree.",
+    "inputSchema": {
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "model_id"
+      ],
+      "title": "mirror_topoArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "selection",
+    "description": "Parse ordered WHUCAD target trees including advanced selection markers. Replaces current selection.",
+    "inputSchema": {
+      "$defs": {
+        "Selection": {
+          "additionalProperties": false,
+          "properties": {
+            "select_type": {
+              "enum": [
+                "Wire",
+                "Face",
+                "Edge",
+                "Multiply_Face",
+                "Sub_Face"
+              ],
+              "title": "Select Type",
+              "type": "string"
+            },
+            "body_type": {
+              "default": "None",
+              "enum": [
+                "None",
+                "OriginElements",
+                "Sketch",
+                "Pad",
+                "Shaft",
+                "Pocket",
+                "Add",
+                "Remove",
+                "Intersect",
+                "Shell",
+                "Chamfer",
+                "EdgeFillet",
+                "Mirror",
+                "Hole"
+              ],
+              "title": "Body Type",
+              "type": "string"
+            },
+            "body_no": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Body No",
+              "type": "integer"
+            },
+            "no": {
+              "default": 0,
+              "minimum": 0,
+              "title": "No",
+              "type": "integer"
+            },
+            "operation_list": {
+              "items": {
+                "$ref": "#/$defs/Selection"
+              },
+              "title": "Operation List",
+              "type": "array"
+            },
+            "no_shared_included": {
+              "items": {
+                "$ref": "#/$defs/Selection"
+              },
+              "title": "No Shared Included",
+              "type": "array"
+            },
+            "all_oriented_included": {
+              "additionalProperties": {
+                "items": {
+                  "$ref": "#/$defs/Selection"
+                },
+                "type": "array"
+              },
+              "propertyNames": {
+                "enum": [
+                  "Limits1",
+                  "Limits2"
+                ]
+              },
+              "title": "All Oriented Included",
+              "type": "object"
+            },
+            "all_partially_included": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/Selection"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "All Partially Included"
+            }
+          },
+          "required": [
+            "select_type"
+          ],
+          "title": "Selection",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "targets": {
+          "items": {
+            "$ref": "#/$defs/Selection"
+          },
+          "title": "Targets",
+          "type": "array"
+        }
+      },
+      "required": [
+        "model_id",
+        "targets"
+      ],
+      "title": "selectionArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "extrude",
+    "description": "Extrude pending sketch; later extrusions use original separate-body Boolean semantics.",
+    "inputSchema": {
+      "$defs": {
+        "SketchFrame": {
+          "additionalProperties": false,
+          "properties": {
+            "origin": {
+              "default": [
+                0,
+                0,
+                0
+              ],
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "title": "Origin",
+              "type": "array"
+            },
+            "x_direction": {
+              "default": [
+                1,
+                0,
+                0
+              ],
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "title": "X Direction",
+              "type": "array"
+            },
+            "y_direction": {
+              "default": [
+                0,
+                1,
+                0
+              ],
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "title": "Y Direction",
+              "type": "array"
+            }
+          },
+          "title": "SketchFrame",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "length": {
+          "title": "Length",
+          "type": "number"
+        },
+        "frame": {
+          "$ref": "#/$defs/SketchFrame",
+          "default": {
+            "origin": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "x_direction": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "y_direction": [
+              0.0,
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "second_length": {
+          "default": 0,
+          "title": "Second Length",
+          "type": "number"
+        },
+        "operation": {
+          "default": "AddFeatureOperation",
+          "enum": [
+            "AddFeatureOperation",
+            "CutFeatureOperation",
+            "IntersectFeatureOperation"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "first_limit": {
+          "default": "OffsetLimit",
+          "enum": [
+            "OffsetLimit",
+            "UpToNextLimit",
+            "UpToLastLimit",
+            "UpToPlaneLimit",
+            "UpToSurfaceLimit",
+            "UpThruNextLimit"
+          ],
+          "title": "First Limit",
+          "type": "string"
+        },
+        "second_limit": {
+          "default": "OffsetLimit",
+          "enum": [
+            "OffsetLimit",
+            "UpToNextLimit",
+            "UpToLastLimit",
+            "UpToPlaneLimit",
+            "UpToSurfaceLimit",
+            "UpThruNextLimit"
+          ],
+          "title": "Second Limit",
+          "type": "string"
+        },
+        "reversed": {
+          "default": false,
+          "title": "Reversed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "model_id",
+        "length"
+      ],
+      "title": "extrudeArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "pocket",
+    "description": "Cut the current body using the pending sketch and stored limiting face, if needed.",
+    "inputSchema": {
+      "$defs": {
+        "SketchFrame": {
+          "additionalProperties": false,
+          "properties": {
+            "origin": {
+              "default": [
+                0,
+                0,
+                0
+              ],
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "title": "Origin",
+              "type": "array"
+            },
+            "x_direction": {
+              "default": [
+                1,
+                0,
+                0
+              ],
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "title": "X Direction",
+              "type": "array"
+            },
+            "y_direction": {
+              "default": [
+                0,
+                1,
+                0
+              ],
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "title": "Y Direction",
+              "type": "array"
+            }
+          },
+          "title": "SketchFrame",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "depth": {
+          "title": "Depth",
+          "type": "number"
+        },
+        "frame": {
+          "$ref": "#/$defs/SketchFrame",
+          "default": {
+            "origin": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "x_direction": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "y_direction": [
+              0.0,
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "second_depth": {
+          "default": 0,
+          "title": "Second Depth",
+          "type": "number"
+        },
+        "first_limit": {
+          "default": "OffsetLimit",
+          "enum": [
+            "OffsetLimit",
+            "UpToNextLimit",
+            "UpToLastLimit",
+            "UpToPlaneLimit",
+            "UpToSurfaceLimit",
+            "UpThruNextLimit"
+          ],
+          "title": "First Limit",
+          "type": "string"
+        },
+        "second_limit": {
+          "default": "OffsetLimit",
+          "enum": [
+            "OffsetLimit",
+            "UpToNextLimit",
+            "UpToLastLimit",
+            "UpToPlaneLimit",
+            "UpToSurfaceLimit",
+            "UpThruNextLimit"
+          ],
+          "title": "Second Limit",
+          "type": "string"
+        },
+        "reversed": {
+          "default": false,
+          "title": "Reversed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "model_id",
+        "depth"
+      ],
+      "title": "pocketArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "revolve",
+    "description": "Revolve around stored axis. Angles use original decoded WHUCAD degrees, including its second-angle convention.",
+    "inputSchema": {
+      "$defs": {
+        "SketchFrame": {
+          "additionalProperties": false,
+          "properties": {
+            "origin": {
+              "default": [
+                0,
+                0,
+                0
+              ],
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "title": "Origin",
+              "type": "array"
+            },
+            "x_direction": {
+              "default": [
+                1,
+                0,
+                0
+              ],
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "title": "X Direction",
+              "type": "array"
+            },
+            "y_direction": {
+              "default": [
+                0,
+                1,
+                0
+              ],
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "title": "Y Direction",
+              "type": "array"
+            }
+          },
+          "title": "SketchFrame",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "angle_one": {
+          "title": "Angle One",
+          "type": "number"
+        },
+        "angle_two": {
+          "title": "Angle Two",
+          "type": "number"
+        },
+        "frame": {
+          "$ref": "#/$defs/SketchFrame",
+          "default": {
+            "origin": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "x_direction": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "y_direction": [
+              0.0,
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "operation": {
+          "default": "AddFeatureOperation",
+          "enum": [
+            "AddFeatureOperation",
+            "CutFeatureOperation",
+            "IntersectFeatureOperation"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "reversed": {
+          "const": false,
+          "default": false,
+          "title": "Reversed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "model_id",
+        "angle_one",
+        "angle_two"
+      ],
+      "title": "revolveArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "groove",
+    "description": "Rotational cut using original decoded angle convention and stored axis.",
+    "inputSchema": {
+      "$defs": {
+        "SketchFrame": {
+          "additionalProperties": false,
+          "properties": {
+            "origin": {
+              "default": [
+                0,
+                0,
+                0
+              ],
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "title": "Origin",
+              "type": "array"
+            },
+            "x_direction": {
+              "default": [
+                1,
+                0,
+                0
+              ],
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "title": "X Direction",
+              "type": "array"
+            },
+            "y_direction": {
+              "default": [
+                0,
+                1,
+                0
+              ],
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "title": "Y Direction",
+              "type": "array"
+            }
+          },
+          "title": "SketchFrame",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "angle_one": {
+          "title": "Angle One",
+          "type": "number"
+        },
+        "angle_two": {
+          "title": "Angle Two",
+          "type": "number"
+        },
+        "frame": {
+          "$ref": "#/$defs/SketchFrame",
+          "default": {
+            "origin": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "x_direction": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "y_direction": [
+              0.0,
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "reversed": {
+          "const": false,
+          "default": false,
+          "title": "Reversed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "model_id",
+        "angle_one",
+        "angle_two"
+      ],
+      "title": "grooveArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "fillet",
+    "description": "Fillet the stored selection, following original tangency propagation.",
+    "inputSchema": {
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "radius": {
+          "exclusiveMinimum": 0,
+          "title": "Radius",
+          "type": "number"
+        }
+      },
+      "required": [
+        "model_id",
+        "radius"
+      ],
+      "title": "filletArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "chamfer",
+    "description": "Original two-length chamfer, tangency propagation, no reverse.",
+    "inputSchema": {
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "length1": {
+          "exclusiveMinimum": 0,
+          "title": "Length1",
+          "type": "number"
+        },
+        "length2": {
+          "exclusiveMinimum": 0,
+          "title": "Length2",
+          "type": "number"
+        }
+      },
+      "required": [
+        "model_id",
+        "length1",
+        "length2"
+      ],
+      "title": "chamferArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "shell",
+    "description": "Shell the body, removing the stored faces; lengths in mm.",
+    "inputSchema": {
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "inside": {
+          "title": "Inside",
+          "type": "number"
+        },
+        "outside": {
+          "default": 0,
+          "title": "Outside",
+          "type": "number"
+        }
+      },
+      "required": [
+        "model_id",
+        "inside"
+      ],
+      "title": "shellArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "mirror",
+    "description": "Mirror using the selected reference plane.",
+    "inputSchema": {
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "model_id"
+      ],
+      "title": "mirrorArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "draft",
+    "description": "Select neutral face then target faces. Original converter derives final pulling direction from neutral face.",
+    "inputSchema": {
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "angle": {
+          "title": "Angle",
+          "type": "number"
+        },
+        "direction": {
+          "default": [
+            0,
+            0,
+            1
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Direction",
+          "type": "array"
+        }
+      },
+      "required": [
+        "model_id",
+        "angle"
+      ],
+      "title": "draftArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "hole",
+    "description": "Local hole center in given frame; select support first, then limiting face for plane/surface mode.",
+    "inputSchema": {
+      "$defs": {
+        "SketchFrame": {
+          "additionalProperties": false,
+          "properties": {
+            "origin": {
+              "default": [
+                0,
+                0,
+                0
+              ],
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "title": "Origin",
+              "type": "array"
+            },
+            "x_direction": {
+              "default": [
+                1,
+                0,
+                0
+              ],
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "title": "X Direction",
+              "type": "array"
+            },
+            "y_direction": {
+              "default": [
+                0,
+                1,
+                0
+              ],
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "title": "Y Direction",
+              "type": "array"
+            }
+          },
+          "title": "SketchFrame",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "center": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Center",
+          "type": "array"
+        },
+        "radius": {
+          "exclusiveMinimum": 0,
+          "title": "Radius",
+          "type": "number"
+        },
+        "depth": {
+          "exclusiveMinimum": 0,
+          "title": "Depth",
+          "type": "number"
+        },
+        "frame": {
+          "$ref": "#/$defs/SketchFrame",
+          "default": {
+            "origin": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "x_direction": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "y_direction": [
+              0.0,
+              1.0,
+              0.0
+            ]
+          }
+        },
+        "bottom_mode": {
+          "default": "OffsetLimit",
+          "enum": [
+            "OffsetLimit",
+            "UpToNextLimit",
+            "UpToLastLimit",
+            "UpToPlaneLimit",
+            "UpToSurfaceLimit",
+            "UpThruNextLimit"
+          ],
+          "title": "Bottom Mode",
+          "type": "string"
+        }
+      },
+      "required": [
+        "model_id",
+        "center",
+        "radius",
+        "depth"
+      ],
+      "title": "holeArguments",
+      "type": "object"
+    }
+  }
+]

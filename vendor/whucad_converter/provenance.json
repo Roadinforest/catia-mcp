@@ -1,0 +1,38 @@
+{
+  "source": "D:\\Documents\\Desktop\\毕设\\物料\\WHUCAD_converter_version1(Windows)",
+  "note": "Unmodified local WHUCAD runtime source snapshot; see upstream README for attribution. No H5 dataset bundled here.",
+  "files": [
+    {
+      "path": "whucad_lib/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "whucad_lib/cadlib/CAD_Class.py",
+      "sha256": "37d8a859c576d7f331bf7e7251cac89a9ffa8d16a37d87dfa1b0798a2891c8d5"
+    },
+    {
+      "path": "whucad_lib/cadlib/Catia_utils.py",
+      "sha256": "7798b43711f83c44741078638e55bd2042b031efb6eb9f9e61998b349cb2d49c"
+    },
+    {
+      "path": "whucad_lib/cadlib/Geometry_utils.py",
+      "sha256": "6a5fa7cb442d0760a383add7c502e7304f3aabff3e40894c7725faabba47cfb3"
+    },
+    {
+      "path": "whucad_lib/cadlib/macro.py",
+      "sha256": "503362fdb0361e4a9906361469e889ba314b798d7a80799ff01bbd47b26370d0"
+    },
+    {
+      "path": "whucad_lib/cadlib/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "README.md",
+      "sha256": "f355cfa04bc59fe89a45a8beba347a683152e9443cc90ace4f06925468d500a5"
+    },
+    {
+      "path": "requirements.txt",
+      "sha256": "0345cec390bf531b8e5152171e8d4c8e7a882fa25aeb6828ecede4aeb3212fae"
+    }
+  ]
+}

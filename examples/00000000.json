@@ -1,0 +1,83 @@
+{
+  "sample": "0000/00000000",
+  "vector_sha256": "9140f4d5601e11514706285889664ef732e23a0868e8a99c41666f20c0b5ef19",
+  "source_file_sha256": "a52c16d9075a7417e7b368853ab7a08601beea32a01257d2532ccb9e46865598",
+  "geometry_verified": false,
+  "protocol": "whucad-migration",
+  "version": 3,
+  "calls": [
+    {
+      "tool": "sol",
+      "arguments": {}
+    },
+    {
+      "tool": "circle",
+      "arguments": {
+        "center": [
+          0.7578947368421053,
+          0.0
+        ],
+        "radius": 0.7578947368421053
+      }
+    },
+    {
+      "tool": "extrude",
+      "arguments": {
+        "frame": {
+          "origin": [
+            -0.75,
+            0.0,
+            0.0
+          ],
+          "x_direction": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y_direction": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        "first_limit": "OffsetLimit",
+        "second_limit": "OffsetLimit",
+        "reversed": false,
+        "length": 0.2109375,
+        "second_length": 0.0,
+        "operation": "AddFeatureOperation"
+      },
+      "feature_index": 1
+    },
+    {
+      "tool": "topo",
+      "arguments": {}
+    },
+    {
+      "tool": "selection",
+      "arguments": {
+        "targets": [
+          {
+            "select_type": "Face",
+            "body_type": "Pad",
+            "body_no": 1,
+            "no": 2,
+            "operation_list": [],
+            "no_shared_included": [],
+            "all_oriented_included": {},
+            "all_partially_included": null
+          }
+        ]
+      }
+    },
+    {
+      "tool": "chamfer",
+      "arguments": {
+        "length1": 0.171875,
+        "length2": 0.1328125
+      },
+      "feature_index": 2
+    }
+  ],
+  "normalizations": []
+}
