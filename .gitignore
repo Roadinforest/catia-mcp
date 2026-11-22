@@ -25,16 +25,5 @@ eval-results/
 *.sqlite
 *.log
 
-# Release uses explicit source/test/script allowlists. Preserve other local work.
-/docs/*
-!/docs/releases/
-/scripts/*
-!/scripts/execute_mcp_json.py
-/tests/*
-!/tests/test_tools.py
-!/tests/test_stateful.py
-!/tests/test_migration.py
-!/tests/test_json_executor.py
-/whucad_conversion/*
-!/whucad_conversion/stateful.py
-!/whucad_conversion/migration.py
+# Source-only historical scripts are excluded locally in .git/info/exclude.
+# New docs, tests and tool modules remain visible in the extension workspace.
